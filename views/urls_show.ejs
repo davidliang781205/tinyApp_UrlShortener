@@ -5,7 +5,34 @@
 </head>
 <body>
     <!-- Add your EJS code here -->
-    <a href='http://localhost:8080/u/<%= shortURL %>' >http://localhost:8080/u/<%= shortURL %></a>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ShortURL:   <a href="/u/<%= shortURL %>"><%= shortURL %></a></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <form method="POST" action="/urls/<%= shortURL %>/update">  
+                            <td><input class="form-control" id="longURL" type="text" name="longURL" placeholder="<%= longURL %>"></td>
+                            <td>
+                                                                  
+                                    <input class="btn btn-warning" type="submit" value="Update">
+                            </td>
+                            </form>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    <div>
 </body>
 <footer>
         <% include partials/_footer %>

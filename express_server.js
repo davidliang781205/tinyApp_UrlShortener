@@ -21,14 +21,32 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
 });
 
+// -------------- urls Create --------------
+
 app.get("/urls/new", (req, res) => {
     res.render("urls_new");
 });
 
+// -------------- urls Update --------------
 app.get("/urls/:id", (req, res) => {
-    let templateVars = { shortURL: req.params.id };
+    let templateVars = {
+        shortURL: req.params.id,
+        longURL: urlDatabase[req.params.id]
+    };
     res.render("urls_show", templateVars);
 });
+
+app.post("/urls/:id/update", (req, res) => {
+    let templateVars = {
+        shortURL: req.params.id,
+        longURL: urlDatabase[req.params.id]
+    };
+    urlDatabase[req.params.id] = checkHttpOnInput(req.body.longURL);
+    res.redirect("/urls");
+});
+
+
+// -------------- urls Generate --------------
 
 app.post("/urls", (req, res) => {
     let longURL = req.body.longURL;
@@ -37,12 +55,14 @@ app.post("/urls", (req, res) => {
     if (longURL.length < 1) {
 
     } else {
-        if (longURL[0] != 'h' && longURL[1] != 't' && longURL[2] != 't' && longURL[3] != 'p')
-            urlDatabase[shortenCode] = 'http://' + longURL;
+        urlDatabase[shortenCode] = checkHttpOnInput(longURL);
+
     }
     res.redirect(`/urls/${shortenCode}`);
 
 });
+
+// -------------- urls Delete --------------
 
 app.post("/urls/:id/delete", (req, res) => {
     delete urlDatabase[req.params.id];
@@ -50,6 +70,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 });
 
+// -------------- urls Redirect --------------
 
 app.get("/u/:shortURL", (req, res) => {
     let longURL = urlDatabase[req.params.shortURL];
@@ -82,4 +103,11 @@ function generateRandomString() {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+}
+
+function checkHttpOnInput(url) {
+    if (url[0] != 'h' && url[1] != 't' && url[2] != 't' && url[3] != 'p') {
+        url = 'http://' + url;
+    }
+    return url;
 }

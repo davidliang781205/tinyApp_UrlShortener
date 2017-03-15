@@ -20,10 +20,10 @@
                     <tbody>
                         <tr>
                             <% for (url in urls) { %>
-                                <td><%= url %></td><td> <%= urls[url] %></td>
+                                <td><a href="/u/<%= url %>"><%= url %></a></td><td> <%= urls[url] %></td>
                                 <td>
                                     <form method="POST" action="/urls/<%= url %>/delete">                                    
-                                        <button name="<%= url %>" type="button" class="btn btn-warning">Edit</button>
+                                        <a href="/urls/<%= url %>" ><button name="<%= url %>" type="button" class="btn btn-warning">Edit</button></a>
                                         <input class="btn btn-danger" type="submit" value="Delete">
                                     </form>
                                 </td>
