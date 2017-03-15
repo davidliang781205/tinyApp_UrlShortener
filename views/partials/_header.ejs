@@ -1,10 +1,45 @@
 <header>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<ul class="nav nav-pills nav-justified">
-    <li><a href="/urls">Home</a></li>
-    <li><a href="/urls/new">New</a></li>
-    <!-- <li><a href="urls/new">New</a></li>
-    <li><a href="urls/new">New</a></li> -->
-    
-</ul>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/urls">TinyApp URL Shortener</a>
+        </div>
+        <center>
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/urls">Home</a>
+                    </li>
+                    <li><a href="/urls/new">New</a
+                    </li>
+                    
+                </ul>
+                <% if(!username){ %>
+                    <form class="navbar-form navbar-right" method="POST" action="/login">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        </div>
+                        <!--<div class="form-group">
+                            <input type="text" class="form-control" name="password" placeholder="Password">
+                        </div>-->
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </form>
+                <% } else { %>
+                    <form class="navbar-form navbar-right" method="POST" action="/logout">
+                        <!--<div class="form-group">
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        </div>-->
+                        <button type="submit" class="btn btn-primary">Log Out</button>
+                    </form>
+                <% } %>
+            </div>
+        </center>
+    </div>
+</div>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+
 </header>

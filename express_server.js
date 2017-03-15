@@ -2,7 +2,10 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser')
 
+
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
@@ -14,22 +17,31 @@ const urlDatabase = {
 
 
 
+
+
 // *********************** Routing ***********************
 
 app.get("/urls", (req, res) => {
-    let templateVars = { urls: urlDatabase };
+    let templateVars = {
+        username: req.cookies["username"],
+        urls: urlDatabase
+    };
     res.render("urls_index", templateVars);
 });
 
 // -------------- urls Create --------------
 
 app.get("/urls/new", (req, res) => {
-    res.render("urls_new");
+    let templateVars = {
+        username: req.cookies["username"]
+    }
+    res.render("urls_new", templateVars);
 });
 
 // -------------- urls Update --------------
 app.get("/urls/:id", (req, res) => {
     let templateVars = {
+        username: req.cookies["username"],
         shortURL: req.params.id,
         longURL: urlDatabase[req.params.id]
     };
@@ -37,10 +49,6 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id/update", (req, res) => {
-    let templateVars = {
-        shortURL: req.params.id,
-        longURL: urlDatabase[req.params.id]
-    };
     urlDatabase[req.params.id] = checkHttpOnInput(req.body.longURL);
     res.redirect("/urls");
 });
@@ -77,7 +85,17 @@ app.get("/u/:shortURL", (req, res) => {
     res.redirect(longURL);
 });
 
+// -------------- urls Login/out --------------
+app.post("/login", (req, res) => {
+    let username = req.body.username;
+    res.cookie('username', username);
+    res.redirect("/urls");
+});
 
+app.post("/logout", (req, res) => {
+    res.clearCookie('username');
+    res.redirect("/urls");
+});
 
 
 // *********************** 404 ***********************
@@ -95,6 +113,8 @@ app.listen(PORT, () => {
 
 
 // *********************** Functions ***********************
+
+// Generate 6 random characters as shortURL 
 function generateRandomString() {
     let text = "";
     let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -105,6 +125,7 @@ function generateRandomString() {
     return text;
 }
 
+// Check if new url has http at front
 function checkHttpOnInput(url) {
     if (url[0] != 'h' && url[1] != 't' && url[2] != 't' && url[3] != 'p') {
         url = 'http://' + url;
