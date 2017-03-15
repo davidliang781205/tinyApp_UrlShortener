@@ -9,24 +9,36 @@
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
-            <form method="POST" action="/urls/9sm5xK/delete">
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th>Short Key</th>
-                        <th>Long URL</th>
-                        <th>Action</th>
-                    </tr>
+                        <tr>
+                            <th>Short Key</th>
+                            <th>Long URL</th>
+                            <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                    <% for (url in urls) { %>
-                    <td><%= url %></td><td> <%= urls[url] %></td><td><button type="button" class="btn btn-warning">Delete</button></td></tr><tr>
-                    <% } %>
+                        <tr>
+                            <% for (url in urls) { %>
+                                <td><%= url %></td><td> <%= urls[url] %></td>
+                                <td>
+                                    <form method="POST" action="/urls/<%= url %>/delete">                                    
+                                        <button name="<%= url %>" type="button" class="btn btn-warning">Edit</button>
+                                        <input class="btn btn-danger" type="submit" value="Delete">
+                                    </form>
+                                </td>
+                                </tr><tr>
+                            <% } %>
+                    </tr>
+                    <tr>   
+                        <td><a href="/urls/new"><button name="<%= url %>" type="button" class="btn btn-primary">Add New</button></a></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        
                     </tr>
                     </tbody>
                 </table>
-            </form>
             </div>
             <div class="col-md-3"></div>
         </div>
