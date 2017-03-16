@@ -26,7 +26,7 @@ const users = {
         email: "user2@example.com",
         password: "dishwasher-funk"
     },
-    "A": {
+    "a": {
         id: "a",
         email: "123@456.com",
         password: "123"
@@ -105,19 +105,33 @@ app.get("/u/:shortURL", (req, res) => {
 
 // -------------- urls Login/out --------------
 app.post("/login", (req, res) => {
-    let username = req.body.userID;
-    let userID;
+    let userEmail = req.body.email;
+    let userPassword = req.body.password;
+    let currentUser;
     for (user in users) {
-        if (users[user]['email'] === username) {
-            userID = user;
-            res.cookie('userID', userID);
-            res.redirect("/urls");
-        } else {
-            console.log('user not found.');
+        // Check if email exists in current record 
+        if (users[user].email === userEmail) {
+            currentUser = users[user];
         }
     }
-
-
+    // If cannot find user
+    if (!currentUser) {
+        res.status(400).render('error', {
+            error_message: 'User not found.',
+            error_code: res.statusCode
+        });
+    } else {
+        // Check password
+        if (currentUser.password === userPassword) {
+            res.cookie('userID', currentUser.id);
+            res.redirect("/urls");
+        } else {
+            res.status(400).render('error', {
+                error_message: 'Incorrect Email or Password.',
+                error_code: res.statusCode
+            });
+        }
+    }
 
 });
 
@@ -140,27 +154,30 @@ app.post("/register", (req, res) => {
     let userPassword = req.body.password;
     let userID = generateRandomString();
 
-    if (userEmail && userPassword) {
-        for (key in users) {
-            if (users[key].email === userEmail) {
-                //res.status(400);
-                res.send('This email has already registered.');
-            }
+
+    for (key in users) {
+        if (users[key].email === userEmail) {
+            res.status(400).render('error', {
+                error_message: 'This email has already registered.',
+                error_code: res.statusCode
+            });
+            break;
+        } else {
+
         }
-        res.cookie('userID', userID);
-        users[userID] = {
-            id: userID,
-            email: userEmail,
-            password: userPassword
-        }
-        console.log(users);
-        res.redirect('/urls');
-    } else {
-        //res.status(400);
-        res.send('Both fields are required.')
     }
+    res.cookie('userID', userID);
+    users[userID] = {
+        id: userID,
+        email: userEmail,
+        password: userPassword
+    }
+    res.redirect('/urls');
+
 
 });
+// *********************** Error Message ***********************
+
 
 
 // *********************** 404 ***********************
