@@ -153,26 +153,29 @@ app.post("/register", (req, res) => {
     let userEmail = req.body.email;
     let userPassword = req.body.password;
     let userID = generateRandomString();
+    let userExist = false;
 
     for (key in users) {
         if (users[key].email === userEmail) {
-            res.status(400).render('error', {
-                error_message: 'This email has already registered.',
-                error_code: res.statusCode
-            });
-            break;
-        } else {
-
+            userExist = true;
         }
     }
 
-    res.cookie('userID', userID);
-    users[userID] = {
-        id: userID,
-        email: userEmail,
-        password: userPassword
+    if (userExist) {
+        res.status(400).render('error', {
+            error_message: 'This email has already registered.',
+            error_code: res.statusCode
+        });
+    } else {
+        res.cookie('userID', userID);
+        users[userID] = {
+            id: userID,
+            email: userEmail,
+            password: userPassword
+        }
+        res.redirect('/urls');
+
     }
-    res.redirect('/urls');
 
 
 });
