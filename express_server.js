@@ -11,8 +11,18 @@ app.set("view engine", "ejs");
 
 
 const urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"
+    "b2xVn2": {
+        url: "http://www.lighthouselabs.ca",
+        userID: "a"
+    },
+    "9sm5xK": {
+        url: "http://www.google.com",
+        userID: "a"
+    },
+    "123456": {
+        url: "http://www.facebook.com",
+        userID: "userRandomID"
+    }
 };
 
 const users = {
@@ -38,13 +48,28 @@ const users = {
 
 
 // *********************** Routing ***********************
+app.get("/", (req, res) => {
+    res.render("login");
+});
 
 app.get("/urls", (req, res) => {
+    let userData = {};
+    for (data in urlDatabase) {
+        if (urlDatabase[data]['userID'] === req.cookies["userID"]) {
+            userData[data] = urlDatabase[data]['url'];
+        }
+    }
+
     let templateVars = {
         user: users[req.cookies["userID"]],
-        urls: urlDatabase
+        urls: userData
     };
-    res.render("urls_index", templateVars);
+
+    if (req.cookies["userID"]) {
+        res.render("urls_index", templateVars);
+    } else {
+        res.redirect('/');
+    }
 });
 
 // -------------- urls Create --------------
@@ -53,7 +78,12 @@ app.get("/urls/new", (req, res) => {
     let templateVars = {
         user: users[req.cookies["userID"]]
     }
-    res.render("urls_new", templateVars);
+    if (req.cookies["userID"]) {
+        res.render("urls_new", templateVars);
+    } else {
+        res.redirect('/');
+    }
+
 });
 
 // -------------- urls Update --------------
@@ -61,13 +91,21 @@ app.get("/urls/:id", (req, res) => {
     let templateVars = {
         user: users[req.cookies["userID"]],
         shortURL: req.params.id,
-        longURL: urlDatabase[req.params.id]
+        longURL: urlDatabase[req.params.id]['url']
     };
-    res.render("urls_show", templateVars);
+
+    if (req.cookies["userID"]) {
+        res.render("urls_show", templateVars);
+    } else {
+        res.redirect('/');
+    }
 });
 
 app.post("/urls/:id/update", (req, res) => {
-    urlDatabase[req.params.id] = checkHttpOnInput(req.body.longURL);
+    urlDatabase[req.params.id] = {
+        url: checkHttpOnInput(req.body.longURL),
+        userID: req.cookies["userID"]
+    };
     res.redirect("/urls");
 });
 
@@ -81,8 +119,10 @@ app.post("/urls", (req, res) => {
     if (longURL.length < 1) {
 
     } else {
-        urlDatabase[shortenCode] = checkHttpOnInput(longURL);
-
+        urlDatabase[shortenCode] = {
+            url: checkHttpOnInput(longURL),
+            userID: req.cookies["userID"]
+        };
     }
     res.redirect(`/urls/${shortenCode}`);
 
@@ -99,7 +139,7 @@ app.post("/urls/:id/delete", (req, res) => {
 // -------------- urls Redirect --------------
 
 app.get("/u/:shortURL", (req, res) => {
-    let longURL = urlDatabase[req.params.shortURL];
+    let longURL = urlDatabase[req.params.shortURL]['url'];
     res.redirect(longURL);
 });
 
@@ -137,7 +177,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
     res.clearCookie('userID');
-    res.redirect("/urls");
+    res.redirect("/");
 });
 
 // -------------- urls register --------------

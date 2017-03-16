@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
 </head>
-  <body style="padding-top: 70px;">
+<body style="padding-top: 70px;">
+    <!-- Add your EJS code here -->
     <div class="panel-title text-center">
-                <h3 class="title">Registration</h3>
+                <h1 class="title">TinyApp URL Shortener</h1>
                 <hr />
 	</div>
-        <div class="container">	
-            <div class="col-md-3"></div>			
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
             <div class="col-md-6">
-                <form method="POST" action="/register">
+
+            
+                <form class="form-horizontal" method="POST" action="/login">
+						
+
                     <div class="form-group col-lg-6">
                         <label>Email Address</label>
                         <input type="email" name="email" class="form-control" id="register_email" required>
@@ -21,14 +28,39 @@
                         <label>Password</label>
                         <input type="password" name="password" class="form-control" id="register_password" required>
                     </div>
-                    <input class="btn btn-primary" type="submit" value="Register">
-                </form>
+
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-lg btn-block login-button">Log in</button>
+					</div>
+					<div class="login-register">
+				        <a href="/register">Register</a>
+				    </div>
+				</form>
             </div>
-        
             <div class="col-md-3"></div>
         </div>
-
-    </body>
-    <footer>
-    </footer>
+    <div>
+</body>
+<footer>
+</footer>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
