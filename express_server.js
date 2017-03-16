@@ -57,7 +57,6 @@ const users = {
 // *********************** Routing ***********************
 app.get("/", (req, res) => {
     res.render("login");
-    console.log(req.session);
 });
 
 app.get("/urls", (req, res) => {
@@ -76,7 +75,10 @@ app.get("/urls", (req, res) => {
     if (req.session.userID) {
         res.render("urls_index", templateVars);
     } else {
-        res.redirect('/');
+        res.status(401).render('error', {
+            error_message: 'Please log in to access this page.',
+            error_code: res.statusCode
+        });
     }
 });
 
@@ -89,7 +91,10 @@ app.get("/urls/new", (req, res) => {
     if (req.session.userID) {
         res.render("urls_new", templateVars);
     } else {
-        res.redirect('/');
+        res.status(401).render('error', {
+            error_message: 'Please log in to access this page.',
+            error_code: res.statusCode
+        });
     }
 
 });
@@ -105,7 +110,10 @@ app.get("/urls/:id", (req, res) => {
     if (req.session.userID) {
         res.render("urls_show", templateVars);
     } else {
-        res.redirect('/');
+        res.status(401).render('error', {
+            error_message: 'Please log in to access this page.',
+            error_code: res.statusCode
+        });
     }
 });
 
@@ -141,7 +149,6 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
     delete urlDatabase[req.params.id];
     res.redirect('/urls');
-
 });
 
 // -------------- urls Redirect --------------
@@ -164,7 +171,7 @@ app.post("/login", (req, res) => {
     }
     // If cannot find user
     if (!currentUser) {
-        res.status(400).render('error', {
+        res.status(401).render('error', {
             error_message: 'User not found.',
             error_code: res.statusCode
         });
@@ -174,13 +181,12 @@ app.post("/login", (req, res) => {
             req.session.userID = currentUser.id;
             res.redirect("/urls");
         } else {
-            res.status(400).render('error', {
+            res.status(401).render('error', {
                 error_message: 'Incorrect Email or Password.',
                 error_code: res.statusCode
             });
         }
     }
-
 });
 
 app.post("/logout", (req, res) => {
@@ -232,8 +238,11 @@ app.post("/register", (req, res) => {
 
 
 // *********************** 404 ***********************
-app.use((request, response) => {
-    response.status(404).send('Not Found\n');
+app.use((req, res) => {
+    res.status(404).render('error', {
+        error_message: 'Page not found.',
+        error_code: res.statusCode
+    });
 })
 
 
