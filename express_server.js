@@ -154,7 +154,6 @@ app.post("/register", (req, res) => {
     let userPassword = req.body.password;
     let userID = generateRandomString();
 
-
     for (key in users) {
         if (users[key].email === userEmail) {
             res.status(400).render('error', {
@@ -166,6 +165,7 @@ app.post("/register", (req, res) => {
 
         }
     }
+
     res.cookie('userID', userID);
     users[userID] = {
         id: userID,
