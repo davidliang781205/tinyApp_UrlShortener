@@ -15,6 +15,24 @@ const urlDatabase = {
     "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+    "userRandomID": {
+        id: "userRandomID",
+        email: "user@example.com",
+        password: "purple-monkey-dinosaur"
+    },
+    "user2RandomID": {
+        id: "user2RandomID",
+        email: "user2@example.com",
+        password: "dishwasher-funk"
+    },
+    "A": {
+        id: "a",
+        email: "123@456.com",
+        password: "123"
+    }
+}
+
 
 
 
@@ -23,7 +41,7 @@ const urlDatabase = {
 
 app.get("/urls", (req, res) => {
     let templateVars = {
-        username: req.cookies["username"],
+        user: users[req.cookies["userID"]],
         urls: urlDatabase
     };
     res.render("urls_index", templateVars);
@@ -33,7 +51,7 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
     let templateVars = {
-        username: req.cookies["username"]
+        user: users[req.cookies["userID"]]
     }
     res.render("urls_new", templateVars);
 });
@@ -41,7 +59,7 @@ app.get("/urls/new", (req, res) => {
 // -------------- urls Update --------------
 app.get("/urls/:id", (req, res) => {
     let templateVars = {
-        username: req.cookies["username"],
+        user: users[req.cookies["userID"]],
         shortURL: req.params.id,
         longURL: urlDatabase[req.params.id]
     };
@@ -87,14 +105,61 @@ app.get("/u/:shortURL", (req, res) => {
 
 // -------------- urls Login/out --------------
 app.post("/login", (req, res) => {
-    let username = req.body.username;
-    res.cookie('username', username);
-    res.redirect("/urls");
+    let username = req.body.userID;
+    let userID;
+    for (user in users) {
+        if (users[user]['email'] === username) {
+            userID = user;
+            res.cookie('userID', userID);
+            res.redirect("/urls");
+        } else {
+            console.log('user not found.');
+        }
+    }
+
+
+
 });
 
 app.post("/logout", (req, res) => {
-    res.clearCookie('username');
+    res.clearCookie('userID');
     res.redirect("/urls");
+});
+
+// -------------- urls register --------------
+
+app.get("/register", (req, res) => {
+    let templateVars = {
+        user: users[req.cookies["userID"]]
+    };
+    res.render('register', templateVars);
+});
+
+app.post("/register", (req, res) => {
+    let userEmail = req.body.email;
+    let userPassword = req.body.password;
+    let userID = generateRandomString();
+
+    if (userEmail && userPassword) {
+        for (key in users) {
+            if (users[key].email === userEmail) {
+                //res.status(400);
+                res.send('This email has already registered.');
+            }
+        }
+        res.cookie('userID', userID);
+        users[userID] = {
+            id: userID,
+            email: userEmail,
+            password: userPassword
+        }
+        console.log(users);
+        res.redirect('/urls');
+    } else {
+        //res.status(400);
+        res.send('Both fields are required.')
+    }
+
 });
 
 

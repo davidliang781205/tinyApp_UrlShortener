@@ -18,19 +18,20 @@
                     </li>
                     
                 </ul>
-                <% if(!username){ %>
+                <% if(!user){ %>
                     <form class="navbar-form navbar-right" method="POST" action="/login">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="username" placeholder="Username">
+                            <input type="text" class="form-control" name="userID" placeholder="userID">
                         </div>
-                        <!--<div class="form-group">
-                            <input type="text" class="form-control" name="password" placeholder="Password">
-                        </div>-->
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
                         <button type="submit" class="btn btn-primary">Sign In</button>
+                        <a href="/register"><label class="btn btn-primary">Register</label></a>
                     </form>
                 <% } else { %>
                     <form class="navbar-form navbar-right" method="POST" action="/logout">
-                        <label class="form-group">Log in as: <%= username %></lable>&nbsp;
+                        <label class="form-group">Log in as: <%= user['email'] %></lable>&nbsp;
                         <button type="submit" class="btn btn-primary">Log Out</button>
                     </form>
                 <% } %>
@@ -39,5 +40,6 @@
     </div>
 </div>
 <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
 
 </header>
