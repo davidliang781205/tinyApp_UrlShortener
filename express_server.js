@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
+const bcrypt = require('bcrypt');
+
 
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
@@ -29,17 +31,17 @@ const users = {
     "userRandomID": {
         id: "userRandomID",
         email: "user@example.com",
-        password: "purple-monkey-dinosaur"
+        password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
     },
     "user2RandomID": {
         id: "user2RandomID",
         email: "user2@example.com",
-        password: "dishwasher-funk"
+        password: bcrypt.hashSync("dishwasher-funk", 10)
     },
     "a": {
         id: "a",
         email: "123@456.com",
-        password: "123"
+        password: bcrypt.hashSync("123", 10)
     }
 }
 
@@ -162,7 +164,7 @@ app.post("/login", (req, res) => {
         });
     } else {
         // Check password
-        if (currentUser.password === userPassword) {
+        if (bcrypt.compareSync(userPassword, currentUser.password)) {
             res.cookie('userID', currentUser.id);
             res.redirect("/urls");
         } else {
@@ -211,7 +213,7 @@ app.post("/register", (req, res) => {
         users[userID] = {
             id: userID,
             email: userEmail,
-            password: userPassword
+            password: bcrypt.hashSync(userPassword, 10)
         }
         res.redirect('/urls');
 
