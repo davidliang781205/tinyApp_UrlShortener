@@ -118,11 +118,19 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id/update", (req, res) => {
-    urlDatabase[req.params.id] = {
-        url: checkHttpOnInput(req.body.longURL),
-        userID: req.session.userID
-    };
-    res.redirect("/urls");
+    if (req.session.userID === urlDatabase[req.params.id]['userID']) {
+        urlDatabase[req.params.id] = {
+            url: checkHttpOnInput(req.body.longURL),
+            userID: req.session.userID
+        };
+        res.redirect("/urls");
+    } else {
+        res.status(403).render('error', {
+            error_message: 'Forbidden.  Only owner of this url can edit this.',
+            error_code: res.statusCode
+        });
+    }
+
 });
 
 
@@ -147,7 +155,15 @@ app.post("/urls", (req, res) => {
 // -------------- urls Delete --------------
 
 app.post("/urls/:id/delete", (req, res) => {
-    delete urlDatabase[req.params.id];
+    if (req.session.userID === urlDatabase[req.params.id]['userID']) {
+        delete urlDatabase[req.params.id];
+    } else {
+        res.status(403).render('error', {
+            error_message: 'Forbidden.  Only owner of this url can delete this.',
+            error_code: res.statusCode
+        });
+    }
+
     res.redirect('/urls');
 });
 
