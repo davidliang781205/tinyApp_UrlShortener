@@ -7,20 +7,22 @@
     <!-- Add your EJS code here -->
     <div class="container">
         <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Short Key</th>
                             <th>Long URL</th>
+                            <th>Date Created</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <% for (url in urls) { %>
-                                <td><a href="/u/<%= url %>"><%= url %></a></td><td> <%= urls[url] %></td>
+                                <td><a href="/u/<%= url %>"><%= url %></a></td><td> <%= urls[url]['url'] %></td>
+                                <td><%= urls[url]['dateCreated'] %></td>
                                 <td>
                                     <form method="POST" action="/urls/<%= url %>/delete">                                    
                                         <a href="/urls/<%= url %>" ><button name="<%= url %>" type="button" class="btn btn-warning">Edit</button></a>
@@ -34,13 +36,15 @@
                         <td><a href="/urls/new"><button name="<%= url %>" type="button" class="btn btn-primary">Add New</button></a></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        
 
                         
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-3"></div>
+            <div class="col-md-2"></div>
         </div>
     <div>
 </body>

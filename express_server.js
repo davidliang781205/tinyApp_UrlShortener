@@ -20,15 +20,18 @@ app.set("view engine", "ejs");
 const urlDatabase = {
     "b2xVn2": {
         url: "http://www.lighthouselabs.ca",
-        userID: "a"
+        userID: "a",
+        dateCreated: new Date('2016', '0', '25').toISOString().slice(0, 10)
     },
     "9sm5xK": {
         url: "http://www.google.com",
-        userID: "a"
+        userID: "a",
+        dateCreated: new Date().toISOString().slice(0, 10)
     },
     "123456": {
         url: "http://www.facebook.com",
-        userID: "userRandomID"
+        userID: "userRandomID",
+        dateCreated: new Date().toISOString().slice(0, 10)
     }
 };
 
@@ -63,7 +66,7 @@ app.get("/urls", (req, res) => {
     let userData = {};
     for (data in urlDatabase) {
         if (urlDatabase[data]['userID'] === req.session.userID) {
-            userData[data] = urlDatabase[data]['url'];
+            userData[data] = urlDatabase[data];
         }
     }
 
@@ -121,7 +124,8 @@ app.post("/urls/:id/update", (req, res) => {
     if (req.session.userID === urlDatabase[req.params.id]['userID']) {
         urlDatabase[req.params.id] = {
             url: checkHttpOnInput(req.body.longURL),
-            userID: req.session.userID
+            userID: req.session.userID,
+            dateCreated: new Date().toISOString().slice(0, 10)
         };
         res.redirect("/urls");
     } else {
@@ -145,7 +149,8 @@ app.post("/urls", (req, res) => {
     } else {
         urlDatabase[shortenCode] = {
             url: checkHttpOnInput(longURL),
-            userID: req.session.userID
+            userID: req.session.userID,
+            dateCreated: new Date().toISOString().slice(0, 10)
         };
     }
     res.redirect(`/urls/${shortenCode}`);
