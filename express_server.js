@@ -52,8 +52,10 @@ const users = {
 }
 
 // *********************** Functions ***********************
-
-// Generate 6 random characters as shortURL 
+/**
+ * Generate 6 random characters as shortURL 
+ * @return {String} 
+ */
 function generateRandomString() {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -64,7 +66,11 @@ function generateRandomString() {
     return text;
 }
 
-// Check if new url has http at front
+/**
+ * Check if new url has http at front
+ * @param {String} url
+ * @return {String} 
+ */
 function checkHttpOnInput(url) {
     if (url[0] != 'h' && url[1] != 't' && url[2] != 't' && url[3] != 'p' && url[4] != ':') {
         url = 'http://' + url;

@@ -1,28 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head></head>
-  <body style="padding-top: 70px;">
+<head></head>
+<body style="padding-top: 70px;">
     <% include partials/_header %>
-  <div class="container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <form action="/urls" method="POST">
-
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form action="/urls" method="POST">
                         <div class="form-group">
                             <label for="longURL">Enter a URL:</label>
                             <input class="form-control" id="longURL" type="text" name="longURL" placeholder="http://" required>
                         </div>
-                        
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-sm btn-block login-button">Create</button>
                         </div>
-
-                </form>
+                    </form>
+                </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-2"></div>
         </div>
-    <div>
-        
-    </body>
+</body>
 </html>

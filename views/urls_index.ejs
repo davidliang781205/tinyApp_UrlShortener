@@ -4,24 +4,24 @@
 
 </head>
 <body style="padding-top: 70px;">
-  <% include partials/_header %>
+    <% include partials/_header %>
     <!-- Add your EJS code here -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <table class="table">
-                    <thead>
-                        <tr>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <table class="table">
+                        <thead>
+                            <tr>
                             <th>Short Key</th>
                             <th>Long URL</th>
                             <th>Date Created</th>
                             <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <% for (url in urls) { %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <% for (url in urls) { %>
                                 <td><a href="/u/<%= url %>"><%= url %></a></td><td> <%= urls[url]['url'] %></td>
                                 <td><%= urls[url]['dateCreated'] %></td>
                                 <td>
@@ -30,26 +30,22 @@
                                         <input class="btn btn-danger" type="submit" value="Delete">
                                     </form>
                                 </td>
-                                </tr><tr>
+                            </tr><tr>
                             <% } %>
-                    </tr>
-                    <tr>   
-                        <td><a href="/urls/new"><button type="button" class="btn btn-primary">Add New</button></a></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        
-
-                        
-                    </tr>
-                    </tbody>
-                </table>
+                            </tr>
+                            <tr>   
+                                <td>
+                                    <a href="/urls/new"><button type="button" class="btn btn-primary">Add New</button></a>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-2"></div>
         </div>
-    <div>
-</body>
-<footer>
-        <% include partials/_footer %>
-</footer>
+    </body>
 </html>
