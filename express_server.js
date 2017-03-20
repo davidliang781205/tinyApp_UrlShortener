@@ -1,68 +1,83 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
-const bodyParser = require("body-parser");
-var cookieSession = require('cookie-session')
+const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session')
 const bcrypt = require('bcrypt');
-
 
 app.use(express.static(__dirname + '/public'));
 app.use(cookieSession({
     name: 'session',
-    keys: [process.env.SESSION_SECRET || "fluffybunny"],
+    keys: [process.env.SESSION_SECRET || 'fluffybunny'],
     // Cookie Options
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set("view engine", "ejs");
-
+app.set('view engine', 'ejs');
 
 const urlDatabase = {
-    "b2xVn2": {
-        url: "http://www.lighthouselabs.ca",
-        userID: "a",
+    'b2xVn2': {
+        url: 'http://www.lighthouselabs.ca',
+        userID: 'a',
         dateCreated: new Date('2016', '0', '25').toISOString().slice(0, 10)
     },
-    "9sm5xK": {
-        url: "http://www.google.com",
-        userID: "a",
+    '9sm5xK': {
+        url: 'http://www.google.com',
+        userID: 'a',
         dateCreated: new Date().toISOString().slice(0, 10)
     },
-    "123456": {
-        url: "http://www.facebook.com",
-        userID: "userRandomID",
+    '123456': {
+        url: 'http://www.facebook.com',
+        userID: 'userRandomID',
         dateCreated: new Date().toISOString().slice(0, 10)
     }
 };
 
 const users = {
-    "userRandomID": {
-        id: "userRandomID",
-        email: "user@example.com",
-        password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
+    'userRandomID': {
+        id: 'userRandomID',
+        email: 'user@example.com',
+        password: bcrypt.hashSync('purple-monkey-dinosaur', 10)
     },
-    "user2RandomID": {
-        id: "user2RandomID",
-        email: "user2@example.com",
-        password: bcrypt.hashSync("dishwasher-funk", 10)
+    'user2RandomID': {
+        id: 'user2RandomID',
+        email: 'user2@example.com',
+        password: bcrypt.hashSync('dishwasher-funk', 10)
     },
-    "a": {
-        id: "a",
-        email: "123@456.com",
-        password: bcrypt.hashSync("123", 10)
+    'a': {
+        id: 'a',
+        email: '123@456.com',
+        password: bcrypt.hashSync('123', 10)
     }
 }
 
+// *********************** Functions ***********************
 
+// Generate 6 random characters as shortURL 
+function generateRandomString() {
+    let text = '';
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+    for (let i = 0; i < 6; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
 
+    return text;
+}
+
+// Check if new url has http at front
+function checkHttpOnInput(url) {
+    if (url[0] != 'h' && url[1] != 't' && url[2] != 't' && url[3] != 'p' && url[4] != ':') {
+        url = 'http://' + url;
+    }
+    return url;
+}
 
 // *********************** Routing ***********************
-app.get("/", (req, res) => {
-    res.render("login");
+app.get('/', (req, res) => {
+    res.render('login');
 });
 
-app.get("/urls", (req, res) => {
+app.get('/urls', (req, res) => {
     let userData = {};
     for (data in urlDatabase) {
         if (urlDatabase[data]['userID'] === req.session.userID) {
@@ -76,7 +91,7 @@ app.get("/urls", (req, res) => {
     };
 
     if (req.session.userID) {
-        res.render("urls_index", templateVars);
+        res.render('urls_index', templateVars);
     } else {
         res.status(401).render('error', {
             error_message: 'Please log in to access this page.',
@@ -87,12 +102,12 @@ app.get("/urls", (req, res) => {
 
 // -------------- urls Create --------------
 
-app.get("/urls/new", (req, res) => {
+app.get('/urls/new', (req, res) => {
     let templateVars = {
         user: users[req.session.userID]
     }
     if (req.session.userID) {
-        res.render("urls_new", templateVars);
+        res.render('urls_new', templateVars);
     } else {
         res.status(401).render('error', {
             error_message: 'Please log in to access this page.',
@@ -103,31 +118,21 @@ app.get("/urls/new", (req, res) => {
 });
 
 // -------------- urls Update --------------
-app.get("/urls/:id", (req, res) => {
-    let templateVars = {
-        user: users[req.session.userID],
-        shortURL: req.params.id,
-        longURL: urlDatabase[req.params.id]['url']
-    };
-
-    if (req.session.userID) {
-        res.render("urls_show", templateVars);
-    } else {
-        res.status(401).render('error', {
-            error_message: 'Please log in to access this page.',
+app.get('/urls/:id', (req, res) => {
+    if (!urlDatabase[req.params.id]) {
+        res.status(404).render('error', {
+            error_message: 'Page not found.',
             error_code: res.statusCode
         });
     }
-});
 
-app.post("/urls/:id/update", (req, res) => {
     if (req.session.userID === urlDatabase[req.params.id]['userID']) {
-        urlDatabase[req.params.id] = {
-            url: checkHttpOnInput(req.body.longURL),
-            userID: req.session.userID,
-            dateCreated: new Date().toISOString().slice(0, 10)
+        let templateVars = {
+            user: users[req.session.userID],
+            shortURL: req.params.id,
+            longURL: urlDatabase[req.params.id]['url']
         };
-        res.redirect("/urls");
+        res.render('urls_show', templateVars);
     } else {
         res.status(403).render('error', {
             error_message: 'Forbidden.  Only owner of this url can edit this.',
@@ -135,31 +140,45 @@ app.post("/urls/:id/update", (req, res) => {
         });
     }
 
+
+});
+
+app.post('/urls/:id/update', (req, res) => {
+    if (req.session.userID === urlDatabase[req.params.id]['userID']) {
+        urlDatabase[req.params.id] = {
+            url: checkHttpOnInput(req.body.longURL),
+            userID: req.session.userID,
+            dateCreated: new Date().toISOString().slice(0, 10)
+        };
+        res.redirect('/urls');
+    } else {
+        res.status(403).render('error', {
+            error_message: 'Forbidden.  Only owner of this url can edit this.',
+            error_code: res.statusCode
+        });
+    }
 });
 
 
 // -------------- urls Generate --------------
 
-app.post("/urls", (req, res) => {
+app.post('/urls', (req, res) => {
     let longURL = req.body.longURL;
     let shortenCode = generateRandomString();
 
-    if (longURL.length < 1) {
+    urlDatabase[shortenCode] = {
+        url: checkHttpOnInput(longURL),
+        userID: req.session.userID,
+        dateCreated: new Date().toISOString().slice(0, 10)
+    };
 
-    } else {
-        urlDatabase[shortenCode] = {
-            url: checkHttpOnInput(longURL),
-            userID: req.session.userID,
-            dateCreated: new Date().toISOString().slice(0, 10)
-        };
-    }
     res.redirect(`/urls/${shortenCode}`);
 
 });
 
 // -------------- urls Delete --------------
 
-app.post("/urls/:id/delete", (req, res) => {
+app.post('/urls/:id/delete', (req, res) => {
     if (req.session.userID === urlDatabase[req.params.id]['userID']) {
         delete urlDatabase[req.params.id];
     } else {
@@ -174,16 +193,18 @@ app.post("/urls/:id/delete", (req, res) => {
 
 // -------------- urls Redirect --------------
 
-app.get("/u/:shortURL", (req, res) => {
+app.get('/u/:shortURL', (req, res) => {
     let longURL = urlDatabase[req.params.shortURL]['url'];
+
     res.redirect(longURL);
 });
 
 // -------------- urls Login/out --------------
-app.post("/login", (req, res) => {
+app.post('/login', (req, res) => {
     let userEmail = req.body.email;
     let userPassword = req.body.password;
     let currentUser;
+
     for (user in users) {
         // Check if email exists in current record 
         if (users[user].email === userEmail) {
@@ -200,7 +221,7 @@ app.post("/login", (req, res) => {
         // Check password
         if (bcrypt.compareSync(userPassword, currentUser.password)) {
             req.session.userID = currentUser.id;
-            res.redirect("/urls");
+            res.redirect('/urls');
         } else {
             res.status(401).render('error', {
                 error_message: 'Incorrect Email or Password.',
@@ -210,21 +231,22 @@ app.post("/login", (req, res) => {
     }
 });
 
-app.post("/logout", (req, res) => {
+app.post('/logout', (req, res) => {
     req.session = null;
-    res.redirect("/");
+    res.redirect('/');
 });
 
 // -------------- urls register --------------
 
-app.get("/register", (req, res) => {
+app.get('/register', (req, res) => {
     let templateVars = {
         user: users[req.session.userID]
     };
+
     res.render('register', templateVars);
 });
 
-app.post("/register", (req, res) => {
+app.post('/register', (req, res) => {
     let userEmail = req.body.email;
     let userPassword = req.body.password;
     let userID = generateRandomString();
@@ -249,10 +271,7 @@ app.post("/register", (req, res) => {
             password: bcrypt.hashSync(userPassword, 10)
         }
         res.redirect('/urls');
-
     }
-
-
 });
 // *********************** Error Message ***********************
 
@@ -272,26 +291,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
 });
-
-
-
-// *********************** Functions ***********************
-
-// Generate 6 random characters as shortURL 
-function generateRandomString() {
-    let text = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < 6; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
-// Check if new url has http at front
-function checkHttpOnInput(url) {
-    if (url[0] != 'h' && url[1] != 't' && url[2] != 't' && url[3] != 'p') {
-        url = 'http://' + url;
-    }
-    return url;
-}

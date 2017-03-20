@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <% include partials/_header %>
+  
 </head>
-<body style="padding-top: 70px;">
-
+<body style='padding-top: 70px;'>
+<% include partials/_header %>
     <!-- Add your EJS code here -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <table class="table">
+    <div class='container'>
+        <div class='row'>
+            <div class='col-md-2'></div>
+            <div class='col-md-8'>
+                <table class='table'>
                     <thead>
                         <tr>
-                            <th>ShortURL:   <a href="/u/<%= shortURL %>"><%= shortURL %></a></th>
+                            <th>ShortURL:   <a href='/u/<%= shortURL %>'><%= shortURL %></a></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <form method="POST" action="/urls/<%= shortURL %>/update">  
-                            <td><input class="form-control" id="longURL" type="text" name="longURL" placeholder="<%= longURL %>"></td>
+                            <form method='POST' action='/urls/<%= shortURL %>/update'>  
+                            <td><input class='form-control' id='longURL' type='text' name='longURL' placeholder='<%= longURL %>' required></td>
                             <td>                                     
-                                <input class="btn btn-warning" type="submit" value="Update">
+                                <input class='btn btn-warning' type='submit' value='Update'>
                             </td>
                             </form>
                             
@@ -30,11 +30,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-2"></div>
+            <div class='col-md-2'></div>
         </div>
     <div>
 </body>
-<footer>
-        <% include partials/_footer %>
-</footer>
 </html>
