@@ -3,25 +3,19 @@
 <head><link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
 </head>
-  <body style="padding-top: 70px;">
-
-        <div class="container">	
+<body style="padding-top: 70px;">
+    <div class="container">
+        <div class="row">
             <div class="col-md-2"></div>			
             <div class="col-md-8">
                 <h3 class="dark-grey">ERROR</h3>
                 <div class="alert alert-warning">
                     <strong><%= error_code %></strong><br />
                     <%= error_message %><br />
-
-                    You'll be redirected in 5 seconds...
-
                 </div>
             </div>
             <div class="col-md-2"></div>
         </div>
-
-    </body>
-    <footer>
-        <% include partials/_footer %>
-    </footer>
+    </div>
+</body>
 </html>
